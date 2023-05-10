@@ -1,4 +1,5 @@
 import "./App.css";
+import Search from "./Search";
 
 function App() {
   return (
@@ -7,7 +8,7 @@ function App() {
         <h1>Weather Forecast</h1>
       </header>
       <body className="App-body">
-        <p>Search field here</p>
+        <Search />
       </body>
       <footer className="App-footer">
         <p>
