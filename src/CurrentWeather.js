@@ -26,8 +26,22 @@ export default function CurrentWeather(props) {
     setIcon(
       `https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`
     );
-    setSunrise(response.data.sys.sunrise);
-    setSunset(response.data.sys.sunset);
+    setSunrise(formatDate(response.data.sys.sunrise * 1000));
+    setSunset(formatDate(response.data.sys.sunset * 1000));
+  }
+
+  function formatDate(timestamp) {
+    let now = new Date(timestamp);
+    let hours = now.getHours();
+    if (hours < 10) {
+      hours = `0${hours}`;
+    }
+    let minutes = now.getMinutes();
+    if (minutes < 10) {
+      minutes = `0${minutes}`;
+    }
+
+    return `${hours}:${minutes}`;
   }
 
   let url = `https://api.openweathermap.org/data/2.5/weather?q=${props.city}&appid=667d9f573c8af4c33457be5d561a9148&units=imperial`;
@@ -63,8 +77,12 @@ export default function CurrentWeather(props) {
           </p>
         </div>
         <div className="cw-col">
-          <p>Sunrise: {sunrise}</p>
-          <p>Sunset: {sunset}</p>
+          <p>
+            Sunrise: <strong>{sunrise}</strong>
+          </p>
+          <p>
+            Sunset: <strong>{sunset}</strong>
+          </p>
         </div>
       </div>
       <p>Insert Forecast Here</p>
