@@ -15,6 +15,8 @@ export default function CurrentWeather(props) {
   const [icon, setIcon] = useState(null);
   const [sunrise, setSunrise] = useState(null);
   const [sunset, setSunset] = useState(null);
+  const [coordinates, setCoordinates] = useState(null);
+  const [loaded, setLoaded] = useState(false);
   function showWeather(response) {
     setTemperature(response.data.main.temp);
     setFeelsLike(response.data.main.feels_like);
@@ -29,6 +31,8 @@ export default function CurrentWeather(props) {
     );
     setSunrise(formatDate(response.data.sys.sunrise * 1000));
     setSunset(formatDate(response.data.sys.sunset * 1000));
+    setCoordinates(response.data.coord);
+    setLoaded(true);
   }
 
   function formatDate(timestamp) {
@@ -45,48 +49,50 @@ export default function CurrentWeather(props) {
     return `${hours}:${minutes}`;
   }
 
-  let url = `https://api.openweathermap.org/data/2.5/weather?q=${props.city}&appid=667d9f573c8af4c33457be5d561a9148&units=imperial`;
-  axios.get(url).then(showWeather);
-
-  return (
-    <div className="current-weather">
-      <h2>Currently in {props.city}</h2>
-      <div className="cw-row">
-        <div className="cw-col ct">
-          <div className="ct-col">
-            <img src={icon} alt="icon" />
-            <p>{description}</p>
+  if (loaded) {
+    return (
+      <div className="current-weather">
+        <h2>Currently in {props.city}</h2>
+        <div className="cw-row">
+          <div className="cw-col ct">
+            <div className="ct-col">
+              <img src={icon} alt="icon" />
+              <p>{description}</p>
+            </div>
+            <div className="ct-col">
+              <h3>{Math.round(temperature)}°F</h3>
+              <p>Feels like {Math.round(feelsLike)}°F</p>
+            </div>
           </div>
-          <div className="ct-col">
-            <h3>{Math.round(temperature)}°F</h3>
-            <p>Feels like {Math.round(feelsLike)}°F</p>
+          <div className="cw-col">
+            <p>
+              <span id="temp-max">{Math.round(maxTemp)}°F</span> |{" "}
+              <span id="temp-min">{Math.round(minTemp)}°F</span>
+            </p>
+            <p>
+              Humidity: <strong>{Math.round(humidity)}%</strong>
+            </p>
+            <p>
+              Wind: <strong>{Math.round(wind)} miles/hr</strong>
+            </p>
+            <p>
+              Visibility: <strong>{visibility} miles</strong>
+            </p>
+          </div>
+          <div className="cw-col">
+            <p>
+              Sunrise: <strong>{sunrise}</strong>
+            </p>
+            <p>
+              Sunset: <strong>{sunset}</strong>
+            </p>
           </div>
         </div>
-        <div className="cw-col">
-          <p>
-            <span id="temp-max">{Math.round(maxTemp)}°F</span> |{" "}
-            <span id="temp-min">{Math.round(minTemp)}°F</span>
-          </p>
-          <p>
-            Humidity: <strong>{Math.round(humidity)}%</strong>
-          </p>
-          <p>
-            Wind: <strong>{Math.round(wind)} miles/hr</strong>
-          </p>
-          <p>
-            Visibility: <strong>{visibility} miles</strong>
-          </p>
-        </div>
-        <div className="cw-col">
-          <p>
-            Sunrise: <strong>{sunrise}</strong>
-          </p>
-          <p>
-            Sunset: <strong>{sunset}</strong>
-          </p>
-        </div>
+        <Forecast city={props.city} coordinates={coordinates} />
       </div>
-      <Forecast />
-    </div>
-  );
+    );
+  } else {
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${props.city}&appid=667d9f573c8af4c33457be5d561a9148&units=imperial`;
+    axios.get(url).then(showWeather);
+  }
 }

@@ -15,11 +15,16 @@ function App() {
           <a
             href="https://github.com/kmlaird/weather-app-jsx.git"
             target="_blank"
+            rel="noreferrer"
           >
             Open-source code
           </a>{" "}
           by{" "}
-          <a href="https://www.linkedin.com/in/kimlaird/" target="_blank">
+          <a
+            rel="noreferrer"
+            href="https://www.linkedin.com/in/kimlaird/"
+            target="_blank"
+          >
             Kim Laird
           </a>
           .
